@@ -1,0 +1,66 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_meta_tags_charset %}
+    {{ parent() }}
+    <!-- WbmTagManagerAnalytics Head Snippet Start -->
+    {% block wbm_layout_head_tag_manager_data_layer_push %}
+        <script id="wbmTagMangerDefine" {{ wbmTagManagerConfig.dataLayerScriptTagAttributes|raw }}>{% verbatim %}
+            let gtmIsTrackingProductClicks = Boolean({% endverbatim %}{{ wbmTagManagerConfig.isTrackingProductClicks|raw }}{% verbatim %}),
+                gtmIsTrackingAddToWishlistClicks = Boolean({% endverbatim %}{{ wbmTagManagerConfig.isTrackingAddToWishlistClicks|raw }}{% verbatim %}),
+                gtmContainerId = '{% endverbatim %}{{ wbmTagManagerConfig.gtmContainerId|raw }}{% verbatim %}',
+                hasSWConsentSupport = Boolean(Number({% endverbatim %}{{ wbmTagManagerConfig.hasSWConsentSupport }}{% verbatim %}));
+            window.wbmScriptIsSet = false;
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({% endverbatim %}{{ dataLayerUser|raw }}{% verbatim %});{% endverbatim %}
+        </script>
+        {% if dataLayer %}
+            <script id="wbmTagMangerDataLayer" {{ wbmTagManagerConfig.dataLayerScriptTagAttributes|raw }}>
+                window.dataLayer.push({ ecommerce: null });
+
+                let cleanDataLayer = {{ dataLayer|raw }};
+
+                if (Array.isArray(cleanDataLayer)) {
+                    cleanDataLayer = cleanDataLayer.map(entry => {
+                        if (entry.ecommerce && entry.ecommerce.items) {
+                            entry.ecommerce.items = entry.ecommerce.items.map(item => {
+                                if (item.item_id) {
+                                    item.item_id = item.item_id.replace('free-product-', '');
+                                }
+                                return item;
+                            });
+                        }
+                        return entry;
+                    });
+                }
+
+                window.dataLayer.push(cleanDataLayer);
+            </script>
+        {% endif %}
+    {% endblock %}
+    {% block wbm_layout_head_tag_manager_snippet %}
+        {% if wbmTagManagerConfig.gtmContainerId %}
+        <script id="wbmTagManger" {{ wbmTagManagerConfig.scriptTagAttributes|raw }}>{% verbatim %}
+            function getCookie(name) {
+                var cookieMatch = document.cookie.match(name + '=(.*?)(;|$)');
+                return cookieMatch && decodeURI(cookieMatch[1]);
+            }
+
+            var gtmCookieSet = getCookie('{% endverbatim %}{{ wbmTagManagerConfig.wbmCookieEnabledName }}{% verbatim %}');
+            {% endverbatim %}{% if wbmTagManagerConfig.gtmFunctionOverwrite is empty %}{% verbatim %}
+            var googleTag = function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+'{% endverbatim %}{{ wbmTagManagerConfig.extendedUrlParameter|trim|raw }}{% verbatim %}';f.parentNode.insertBefore(j,f);};
+            {% endverbatim %}{% else %}{% verbatim %}
+            var googleTag = {% endverbatim %}{{ wbmTagManagerConfig.gtmFunctionOverwrite|replace({"\n": "", "\r": "", "\t": ""})|raw }}{% verbatim %}
+            {% endverbatim %}{% endif %}{% verbatim %}
+
+            if (hasSWConsentSupport && gtmCookieSet === null) {
+                window.wbmGoogleTagmanagerId = gtmContainerId;
+                window.wbmScriptIsSet = false;
+                window.googleTag = googleTag;
+            } else {
+                window.wbmScriptIsSet = true;
+                googleTag(window, document, 'script', 'dataLayer', gtmContainerId);
+                googleTag = null;
+            }{% endverbatim %}
+        </script><!-- WbmTagManagerAnalytics Head Snippet End -->{% endif %}
+    {% endblock %}
+{% endblock %}

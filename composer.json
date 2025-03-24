@@ -1,0 +1,47 @@
+{
+    "name": "webmatch/tag-manager-analytics",
+    "keywords": ["shopware6", "shopware-6", "GTM", "datalayer", "datalayer-configuration", "google-tag-manager", "shopware-plugin"],
+    "description": "Google Tag Manager + Enhanced E-Commerce Tracking",
+    "version": "5.2.5",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "require": {
+        "shopware/core": ">=6.5.1",
+        "ext-json": "*"
+    },
+    "authors": [
+        {
+            "name": "Webmatch GmbH"
+        }
+    ],
+    "extra": {
+        "shopware-plugin-class": "Wbm\\TagManagerAnalytics\\WbmTagManagerAnalytics",
+        "copyright": "(c) by Webmatch GmbH",
+        "label": {
+            "de-DE": "Google Tag Manager + GA4 E-Commerce Tracking",
+            "en-GB": "Google Tag Manager + GA4 E-Commerce Tracking"
+        },
+        "description": {
+            "de-DE": "Integration des Google Tag Managers mit Implementierung von Google Analytics 4 E-Commerce Tracking für Shopware 6",
+            "en-GB": "Integration of Google Tag Manager with implementation of Google Analytics 4 E-Commerce Tracking for Shopware 6"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.webmatch.de",
+            "en-GB": "https://www.webmatch.de"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Wbm\\TagManagerAnalytics\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wbm\\TagManagerAnalytics\\Test\\": "tests/"
+        }
+    },
+    "conflict": {
+        "shopware/storefront": "<6,>=7",
+        "shopware/administration": "<6,>=7"
+    }
+}
